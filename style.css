@@ -1,0 +1,150 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: #f7f7f7;
+  padding: 20px;
+}
+h1{
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Product Grid */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  flex: 1;
+}
+
+.product-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.product-card img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.product-card .price {
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.bundle-toggle {
+  background-color: #222;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+
+.bundle-toggle.active {
+  background-color: green;
+}
+
+/* Bundle Sidebar */
+.bundle-sidebar {
+  width: 300px;
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+  position: sticky;
+  top: 20px;
+}
+
+.progress {
+  margin-bottom: 16px;
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: #eee;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+#progress-fill {
+  height: 100%;
+  background-color: #28a745;
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.selected-list div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.selected-list img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.discount {
+  color: #e60023;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.subtotal {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+#add-bundle-btn {
+  width: 100%;
+  padding: 10px;
+  font-weight: bold;
+  border: none;
+  background-color: grey;
+  color: white;
+  cursor: not-allowed;
+  border-radius: 5px;
+}
+
+#add-bundle-btn.enabled {
+  background-color: #007bff;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bundle-sidebar {
+    width: 100%;
+    position: static;
+  }
+}

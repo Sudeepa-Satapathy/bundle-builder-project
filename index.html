@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bundle Builder</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Buy 3 and Save 30%</h1>
+
+  <div class="container">
+    
+    <!-- 🛍 Product Grid -->
+    <section class="product-grid">
+      <!-- 6 product cards -->
+      <!-- Repeat this up to 6 products -->
+      <div class="product-card" data-id="1">
+        <img src="assets/photo-1432149877166-f75d49000351.jpg" alt="Product 1">
+        <h3>Tangerine Hoodie</h3>
+        <p class="price">$20</p>
+        <button class="bundle-toggle">Add to Bundle</button>
+      </div>
+
+      <div class="product-card" data-id="2">
+        <img src="assets/photo-1515886657613-9f3515b0c78f.jpg" alt="Product 2">
+        <h3>Oversized White Coat</h3>
+        <p class="price">$25</p>
+        <button class="bundle-toggle">Add to Bundle</button>
+      </div>
+
+      <div class="product-card" data-id="3">
+        <img src="assets/photo-1529139574466-a303027c1d8b.jpg" alt="Product 3">
+        <h3>Classic Black Boots</h3>
+        <p class="price">$32</p>
+        <button class="bundle-toggle">Add to Bundle</button>
+      </div>
+
+      <div class="product-card" data-id="4">
+        <img src="assets/photo-1588117260148-b47818741c74.jpg" alt="Product 4">
+        <h3>Street Clutch Bag</h3>
+        <p class="price">$18</p>
+        <button class="bundle-toggle">Add to Bundle  +</button>
+      </div>
+
+      <div class="product-card" data-id="5">
+        <img src="assets/photo-1608748010899-18f300247112.jpg" alt="Product 5">
+        <h3>Graphic Tee</h3>
+        <p class="price">$15</p>
+        <button class="bundle-toggle">Add to Bundle</button>
+      </div>
+
+      <div class="product-card" data-id="6">
+        <img src="assets/photo-1632149877166-f75d49000351.jpg" alt="Product 6">
+        <h3>Relaxed Joggers</h3>
+        <p class="price">$22</p>
+        <button class="bundle-toggle">Add to Bundle</button>
+      </div>
+    </section>
+
+    <!-- 🧾 Bundle Sidebar -->
+    <aside class="bundle-sidebar">
+      <div class="progress">
+        <p>Bundle Progress: <span id="progress-count">0</span>/3 Added</p>
+        <div class="progress-bar">
+          <div id="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="selected-list" id="selected-list">
+        <!-- Selected items will appear here -->
+      </div>
+
+      <div class="discount" id="discount-text"></div>
+      <div class="subtotal" id="subtotal-text">Subtotal: $0.00</div>
+
+      <button id="add-bundle-btn" disabled onclick="submitBundle()">Add 3 Items to Proceed</button>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
