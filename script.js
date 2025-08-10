@@ -1,83 +1,149 @@
-const productData = [
-  { id: 1, name: "Tangerine Hoodie", price: 20, img: "assets/photo-1432149877166-f75d49000351.jpg" },
-  { id: 2, name: "Oversized White Coat", price: 25, img: "assets/photo-1515886657613-9f3515b0c78f.jpg" },
-  { id: 3, name: "Classic Black Boots", price: 32, img: "assets/photo-1529139574466-a303027c1d8b.jpg" },
-  { id: 4, name: "Street Clutch Bag", price: 18, img: "assets/photo-1588117260148-b47818741c74.jpg" },
-  { id: 5, name: "Graphic Tee", price: 15, img: "assets/photo-1608748010899-18f300247112.jpg" },
-  { id: 6, name: "Relaxed Joggers", price: 22, img: "assets/photo-1632149877166-f75d49000351.jpg" }
-];
+// List of selected items
+let selectedItems = [];
 
-let selectedProducts = [];
+// Update right sidebar on changes
+function updateSidebar() {
+  const container = document.getElementById("selected-items");
+  container.innerHTML = "";
 
-document.querySelectorAll(".product-card").forEach(card => {
-  const button = card.querySelector(".bundle-toggle");
-  const id = parseInt(card.dataset.id);
+  let subtotal = 0;
+  let totalCount = 0;
 
-  button.addEventListener("click", () => {
-    const product = productData.find(p => p.id === id);
-    const index = selectedProducts.findIndex(p => p.id === product.id);
+  selectedItems.forEach(item => {
+    subtotal += item.price * item.qty;
+    totalCount += item.qty;
 
-    if (index >= 0) {
-      // Remove product
-      selectedProducts.splice(index, 1);
-      button.textContent = "Add to Bundle  ";
-      button.classList.remove('active');
-    } else {
-      selectedProducts.push(product);
-      button.textContent = "Added to Bundle  ✔";
-      button.classList.add('active');
+    // Selected item display box
+    const box = document.createElement("div");
+    box.className = "selected-item-box";
+
+    // Left side: image, name/price, qty controls
+    const leftBox = document.createElement("div");
+    leftBox.className = "selected-left-box";
+
+    // Thumbnail
+    const img = document.createElement("img");
+    img.src = item.img;
+    img.className = "selected-thumb";
+
+    // Info
+    const infoDiv = document.createElement("div");
+    infoDiv.className = "selected-info";
+    infoDiv.innerHTML = `<span style="text-transform:lowercase;">${item.name}</span><br><span style="font-size:0.95em;color:#888;">$${parseFloat(item.price).toFixed(2)}</span>`;
+
+    // Quantity controls
+    const controlsDiv = document.createElement("div");
+    controlsDiv.innerHTML = `
+      <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+      <span class="qty">${item.qty}</span>
+      <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+    `;
+
+    leftBox.appendChild(img);
+    leftBox.appendChild(infoDiv);
+    leftBox.appendChild(controlsDiv);
+
+    // Right side: cart icon
+    const cartImg = document.createElement("img");
+    cartImg.src = "https://cdn-icons-png.flaticon.com/128/7244/7244661.png";
+    cartImg.alt = "Cart";
+    cartImg.className = "cart-icon";
+
+    // Structure: left, right
+    box.appendChild(leftBox);
+    box.appendChild(cartImg);
+    container.appendChild(box);
+  });
+
+  // Discount
+  let discountAmount = 0;
+  let discountBox = document.getElementById("discount");
+  if (totalCount >= 3) {
+    discountAmount = subtotal * 0.3;
+    discountBox.innerHTML =
+      `<span class="discount-label">Discount: -$${discountAmount.toFixed(2)}</span>
+      <span class="discount-percent">(30% OFF)</span>`;
+  } else {
+    discountBox.innerHTML = '';
+  }
+
+  // Subtotal
+  document.getElementById("subtotal").textContent =
+    `Subtotal: $${(subtotal - discountAmount).toFixed(2)}`;
+
+  // Progress bar filling
+  document.getElementById("progress").style.width =
+    `${Math.min(100, (totalCount / 3) * 100)}%`;
+
+  // Cart button state & text
+  const cartBtn = document.getElementById("cart-btn");
+  if (cartAdded) {
+    cartBtn.textContent = "Added to Cart  ✔";
+    cartBtn.disabled = true;
+    cartBtn.classList.add("enabled");
+  } else if (totalCount >= 3) {
+    cartBtn.disabled = false;
+    cartBtn.classList.add("enabled");
+    cartBtn.textContent = "Add 3 Items to Cart";
+  } else {
+    cartBtn.disabled = true;
+    cartBtn.classList.remove("enabled");
+    cartBtn.textContent = "Add 3 Items to Cart";
+  }
+}
+
+// Quantity change
+function changeQty(id, change) {
+  cartAdded = false; // Reset after changing qty
+  const item = selectedItems.find(p => p.id === id);
+  if (!item) return;
+  item.qty += change;
+  if (item.qty <= 0) {
+    selectedItems = selectedItems.filter(p => p.id !== id);
+    // reset button text on product
+    const btn = document.querySelector(`.product[data-id="${id}"] .add-btn`);
+    if (btn) {
+      btn.textContent = "Add to Bundle +";
+      btn.classList.remove("active");
     }
+  }
+  updateSidebar();
+}
 
+// Add-to-bundle button clicks
+document.querySelectorAll(".add-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    cartAdded = false; // Reset cart on adding more
+    const card = btn.closest(".product");
+    const id = parseInt(card.dataset.id);
+    const name = card.dataset.name;
+    const price = parseFloat(card.dataset.price);
+    const img = card.dataset.img;
+
+    let existing = selectedItems.find(p => p.id === id);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      selectedItems.push({ id, name, price, img, qty: 1 });
+    }
+    btn.textContent = "Added to Bundle ✓";
+    btn.classList.add("active");
     updateSidebar();
   });
 });
 
-function updateSidebar() {
-  const count = selectedProducts.length;
-  const progressFill = document.getElementById("progress-fill");
-  const progressCount = document.getElementById("progress-count");
-  const discountText = document.getElementById("discount-text");
-  const subtotalText = document.getElementById("subtotal-text");
-  const selectedList = document.getElementById("selected-list");
-  const addBtn = document.getElementById("add-bundle-btn");
-
-  // Update progress bar and count
-  progressCount.textContent = count;
-  progressFill.style.width = `${(count / 3) * 100}%`;
-
-  // Show selected products in sidebar
-  selectedList.innerHTML = selectedProducts.map(p =>
-    `<div><img src="${p.img}" alt="${p.name}"><span>${p.name} - $${p.price}</span></div>`
-  ).join("");
-
-  let subtotal = selectedProducts.reduce((sum, p) => sum + p.price, 0);
-  let discount = 0;
-
-  // Apply discount if 3 or more selected
-  if (count >= 3) {
-    discount = subtotal * 0.3;
-    discountText.textContent = `Discount: -$${discount.toFixed(2)} (30% OFF)`;
-    addBtn.disabled = false;
-    addBtn.classList.add("enabled");
-  } else {
-    discountText.textContent = ``;
-    addBtn.disabled = true;
-    addBtn.classList.remove("enabled");
-    addBtn.textContent = "Add 3 Items to Proceed"; // Reset text if removed
-  }
-
-  subtotalText.textContent = `Subtotal: $${(subtotal - discount).toFixed(2)}`;
-}
-
-
-document.getElementById("add-bundle-btn").addEventListener("click", () => {
-  const addBtn = document.getElementById("add-bundle-btn");
-
-  if (selectedProducts.length >= 3) {
-
-    // Change button text and disable it
-    addBtn.textContent = "✅ Added to Cart";
-    addBtn.disabled = true;
-    addBtn.classList.remove("abled");
+// Cart button click
+document.getElementById("cart-btn").addEventListener("click", () => {
+  if (selectedItems.reduce((t, i) => t + i.qty, 0) >= 3) {
+    cartAdded = true;
+    // Log to console (simulate bundle added)
+    console.log("BUNDLE:", selectedItems);
+    updateSidebar();
   }
 });
+
+// Initial UI render
+updateSidebar();
+
+// Expose for inline onclick (on quantity buttons)
+window.changeQty = changeQty;
